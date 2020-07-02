@@ -443,6 +443,13 @@ fi
 
 rm -f *.patch || exit 1
 
+answer=`$root/util/ver-ge "$main_ver" 1.17.8`
+if [ "$answer" = "Y" ]; then
+    echo "$info_txt applying the patch for nginx security issue https://hackerone.com/reports/513236"
+    patch -p1 < $root/patches/nginx-$main_ver-static_mod_escape_loc_hdr.patch
+    echo
+fi
+
 echo "$info_txt applying the always_enable_cc_feature_tests patch to nginx"
 patch -p1 < $root/patches/nginx-$main_ver-always_enable_cc_feature_tests.patch
 echo
@@ -507,7 +514,7 @@ mv openresty-xss-nginx-module-* xss-nginx-module-$ver || exit 1
 #################################
 
 ver=0.3.1rc1
-$root/util/get-tarball "https://github.com/vision5/ngx_devel_kit/tarball/v$ver" -O ngx_devel_kit-$ver.tar.gz
+$root/util/get-tarball "https://github.com/simplresty/ngx_devel_kit/tarball/v$ver" -O ngx_devel_kit-$ver.tar.gz
 tar -xzf ngx_devel_kit-$ver.tar.gz || exit 1
 mv vision5-ngx_devel_kit-* ngx_devel_kit-$ver || exit 1
 
@@ -548,7 +555,7 @@ mv openresty-drizzle-nginx-module-* drizzle-nginx-module-$ver || exit 1
 
 #################################
 
-ver=0.10.16rc1
+ver=0.10.16rc5
 $root/util/get-tarball "https://github.com/openresty/lua-nginx-module/archive/v$ver.tar.gz" -O lua-nginx-module-$ver.tar.gz || exit 1
 tar -xzf lua-nginx-module-$ver.tar.gz || exit 1
 mv lua-nginx-module-$ver ngx_lua-$ver || exit 1
@@ -562,7 +569,7 @@ mv openresty-lua-upstream-nginx-module-* ngx_lua_upstream-$ver || exit 1
 
 #################################
 
-ver=0.0.8rc1
+ver=0.0.8rc3
 $root/util/get-tarball "https://github.com/openresty/stream-lua-nginx-module/tarball/v$ver" -O stream-lua-nginx-module-$ver.tar.gz || exit 1
 tar -xzf stream-lua-nginx-module-$ver.tar.gz || exit 1
 mv openresty-stream-lua-nginx-module-* ngx_stream_lua-$ver || exit 1
@@ -661,7 +668,7 @@ mv openresty-redis2-nginx-module-* redis2-nginx-module-$ver || exit 1
 
 #################################
 
-ver=0.25rc2
+ver=0.25rc3
 $root/util/get-tarball "https://github.com/openresty/resty-cli/tarball/v$ver" -O resty-cli-$ver.tar.gz || exit 1
 tar -xzf resty-cli-$ver.tar.gz || exit 1
 mv openresty-resty-cli-* resty-cli-$ver || exit 1
@@ -689,7 +696,7 @@ cd .. || exit 1
 
 #################################
 
-ver=2.1.0.7
+ver=2.1.0.8rc1
 $root/util/get-tarball "https://github.com/openresty/lua-cjson/archive/$ver.tar.gz" -O "lua-cjson-$ver.tar.gz" || exit 1
 tar -xzf lua-cjson-$ver.tar.gz || exit 1
 
@@ -723,7 +730,7 @@ cd ..
 
 #################################
 
-ver=0.14
+ver=0.15
 $root/util/get-tarball "https://github.com/openresty/lua-resty-memcached/tarball/v$ver" -O "lua-resty-memcached-$ver.tar.gz" || exit 1
 tar -xzf lua-resty-memcached-$ver.tar.gz || exit 1
 mv openresty-lua-resty-memcached-* lua-resty-memcached-$ver || exit 1
@@ -818,7 +825,7 @@ cd ..
 
 #################################
 
-ver=0.1.18rc1
+ver=0.1.18rc4
 $root/util/get-tarball "https://github.com/openresty/lua-resty-core/tarball/v$ver" -O "lua-resty-core-$ver.tar.gz" || exit 1
 tar -xzf lua-resty-core-$ver.tar.gz || exit 1
 mv openresty-lua-resty-core-* lua-resty-core-$ver || exit 1
