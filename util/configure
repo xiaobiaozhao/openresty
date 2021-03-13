@@ -564,7 +564,7 @@ _END_
 
     if (!$opts->{no_stream}
         && ! $opts->{no_stream_ssl_preread}
-        && ! $opts->{stream_ssl_preead})
+        && ! $opts->{stream_ssl_preread})
     {
         $opts->{stream_ssl_preread} = 1;
         push @ngx_opts, '--with-stream_ssl_preread_module';
@@ -737,51 +737,6 @@ _END_
                 || $user_luajit_xcflags !~ /-DLUAJIT_DISABLE_GC64/))
         {
             $luajit_xcflags .= " -DLUAJIT_DISABLE_GC64";
-        }
-
-        if (!$user_luajit_xcflags
-            || $user_luajit_xcflags !~ /-msse4\.2\b/)
-        {
-            # check -msse4.2
-            my ($out, $cfile) = tempfile("resty-config-XXXXXX",
-                                         SUFFIX => '.c', TMPDIR => 1,
-                                         UNLINK => 1);
-
-            print $out "
-int main(void) {
-#ifndef __SSE4_2__
-#   error SSE 4.2 not found
-#endif
-    return 0;
-}
-";
-            close $out;
-
-            my $ofile = tmpnam();
-            my $comp = ($cc || 'cc');
-            my $found;
-
-            if (system("$comp -o $ofile -msse4.2 -c $cfile") == 0
-                && -s $ofile)
-            {
-                unlink $ofile;
-
-                if (system("$comp -o $ofile -march=native -c $cfile") == 0
-                    && -s $ofile)
-                {
-                    print "INFO: found -msse4.2 in $comp.\n";
-                    $found = 1;
-                    $luajit_xcflags .= " -msse4.2";
-                }
-            }
-
-            if (-f $ofile) {
-                unlink $ofile;
-            }
-
-            if (!$found) {
-                print "WARNING: -msse4.2 not supported in $comp.\n";
-            }
         }
 
         if ($platform eq 'macosx') {
